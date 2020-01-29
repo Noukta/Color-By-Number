@@ -69,7 +69,7 @@ public class Board : MonoBehaviour {
         transform.position = Vector3.zero;
 
         slider.gameObject.SetActive(!Application.isMobilePlatform);
-        vibrationEnabled = PlayerPrefs.GetInt("vibration_enabled", 1) == 1 && Application.isMobilePlatform;
+        vibrationEnabled = PlayerPrefs.GetInt("vibration_enabled", 0) == 1 && Application.isMobilePlatform;
 
         tiles = new List<Tile>();
         numTiles = new Dictionary<int, int>();
