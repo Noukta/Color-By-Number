@@ -5,6 +5,8 @@ using UnityEngine;
 public class WatchVideoPanel : MonoBehaviour
 {
     private LibraryItem item;
+    public GameObject dialogOverlay;
+    public Transform InTr, OutTr;
 
     public void Awake()
     {
@@ -15,12 +17,23 @@ public class WatchVideoPanel : MonoBehaviour
     {
         this.item = item;
         transform.GetChild(0).gameObject.SetActive(true);
+        dialogOverlay.SetActive(true);
+
+        transform.GetChild(0).transform.position = OutTr.position;
+        iTween.MoveTo(transform.GetChild(0).gameObject, InTr.position, 0.3f);
     }
 
     public void Close()
     {
         this.item = null;
-        transform.GetChild(0).gameObject.SetActive(false);
+        dialogOverlay.SetActive(false);
+        iTween.MoveTo(transform.GetChild(0).gameObject, OutTr.position, 0.3f);
+
+        Timer.Schedule(this, 0.3f, () =>
+        {
+            transform.GetChild(0).gameObject.SetActive(false);
+        });
+        Sound.instance.PlayButton();
     }
 
     public void WatchVideo()
@@ -40,6 +53,7 @@ public class WatchVideoPanel : MonoBehaviour
             item = null;
         }
         transform.GetChild(0).gameObject.SetActive(false);
+        dialogOverlay.SetActive(false);
 
 #endif
     }

@@ -264,7 +264,7 @@ public class Board : MonoBehaviour {
         bottomButtons.selectedNumber = selectedNumber;
         bottomButtons.LoadButtons(colors, bottomInfo);
 
-        CUtils.ShowInterstitialAd();
+        //CUtils.ShowInterstitialAd();
 
         float width = bottomInfo.width, cellSize = bottomInfo.cellSize;
         float bottomHeight = cellSize * bottomInfo.row;

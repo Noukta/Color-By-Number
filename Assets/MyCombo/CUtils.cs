@@ -4,86 +4,9 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using System.IO;
-using UnityEngine.Networking;
 
 public class CUtils
 {
-    public static void OpenStore()
-    {
-#if UNITY_EDITOR || UNITY_ANDROID
-        Application.OpenURL("https://play.google.com/store/apps/details?id=" + Application.identifier);
-#elif UNITY_IPHONE
-		Application.OpenURL("https://itunes.apple.com/app/id" + GameConfig.instance.iosAppID);
-#elif UNITY_STANDALONE_OSX
-		Application.OpenURL("https://itunes.apple.com/app/id" + GameConfig.instance.macAppID);
-#elif UNITY_WSA
-        if (JobWorker.instance.onLink2Store != null) JobWorker.instance.onLink2Store();
-#endif
-    }
-
-    public static void OpenStore(string id)
-    {
-#if UNITY_EDITOR || UNITY_ANDROID
-        Application.OpenURL("https://play.google.com/store/apps/details?id=" + id);
-#elif UNITY_IPHONE
-		Application.OpenURL("https://itunes.apple.com/app/id" + id);
-#elif UNITY_STANDALONE_OSX
-		Application.OpenURL("https://itunes.apple.com/app/id" + id);
-#elif UNITY_WSA
-        if (JobWorker.instance.onLink2Store != null) JobWorker.instance.onLink2Store();
-#endif
-    }
-
-    public static void LikeFacebookPage(string faceID)
-    {
-#if UNITY_ANDROID && !UNITY_EDITOR
-	    Application.OpenURL("fb://page/" + faceID);
-#else
-        Application.OpenURL("https://www.facebook.com/" + faceID);
-#endif
-        SetLikeFbPage(faceID);
-    }
-
-    public static void SetBuyItem()
-    {
-        SetBool("buy_item", true);
-    }
-
-    public static void SetRemoveAds(bool value)
-    {
-        SetBool("remove_ads", value);
-    }
-
-    public static bool IsAdsRemoved()
-    {
-        return GetBool("remove_ads");
-    }
-
-    public static bool IsBuyItem()
-    {
-        return GetBool("buy_item", false);
-    }
-
-    public static void SetRateGame()
-    {
-        SetBool("rate_game", true);
-    }
-
-    public static bool IsGameRated()
-    {
-        return GetBool("rate_game", false);
-    }
-
-    public static void SetLikeFbPage(string id)
-    {
-        SetBool("like_page_" + id, true);
-    }
-
-    public static bool IsLikedFbPage(string id)
-    {
-        return GetBool("like_page_" + id, false);
-    }
-
 #region Double
     public static void SetDouble(string key, double value)
     {
@@ -191,23 +114,14 @@ public class CUtils
 
     public static void ShowInterstitialAd()
     {
-        if (IsBuyItem() || IsAdsRemoved()) return;
-
-        if (IsActionAvailable("show_ads", GameConfig.instance.adPeriod))
+        if (IsActionAvailable("show_ads", GameConfig.instance.adPeriod, false))
         {
 #if UNITY_ANDROID || UNITY_IPHONE
-            //bool result = AdmobController.instance.ShowInterstitial();
-            bool result = false;
-            if (result == false)
+            if (UnityAdsController.instance.IsReady())
             {
-                if (UnityAdsController.instance.IsReady())
-                {
-                    UnityAdsController.instance.ShowInterstitial();
-                    result = true;
-                }
-                //AdmobController.instance.RequestInterstitial();
+                UnityAdsController.instance.ShowInterstitial();
+                SetActionTime("show_ads");
             }
-            if (result) SetActionTime("show_ads");
 #else
             if (JobWorker.instance.onShowInterstitial != null)
             {
@@ -238,7 +152,7 @@ public class CUtils
 
     public static void ShowBannerAd()
     {
-        if (IsBuyItem() || IsAdsRemoved()) return;
+        return;
     }
 
     public static void CloseBannerAd()

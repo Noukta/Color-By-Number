@@ -7,6 +7,8 @@ public class BaseController : MonoBehaviour {
     public GameObject gameMaster;
     public string sceneName;
 
+    private bool firstTime = true;
+
     protected virtual void Awake()
     {
         if (GameMaster.instance == null && gameMaster != null)
@@ -15,25 +17,24 @@ public class BaseController : MonoBehaviour {
 
     protected virtual void Start()
     {
-        if (JobWorker.instance.onEnterScene != null)
-        {
-            JobWorker.instance.onEnterScene(sceneName);
-        }
-
-#if UNITY_WSA && !UNITY_EDITOR
-        StartCoroutine(SavePrefs());
-#endif
+        JobWorker.instance.onEnterScene?.Invoke(sceneName);
     }
 
     public virtual void OnApplicationPause(bool pause)
     {
-        Debug.Log("On Application Pause");
         if (pause == false)
         {
-            Timer.Schedule(this, 0.1f, () =>
+            if(firstTime)
             {
-                CUtils.ShowInterstitialAd();
-            });
+                PlayerPrefs.DeleteKey("show_ads_time");
+                CUtils.SetActionTime("show_ads_time");
+                firstTime = false;
+            }
+            else
+                Timer.Schedule(this, 0.1f, () =>
+                {
+                    CUtils.ShowInterstitialAd();
+                });
         }
     }
 

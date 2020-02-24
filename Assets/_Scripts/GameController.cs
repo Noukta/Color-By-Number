@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Linq;
-using System.IO;
 
 public class GameController : BaseController {
 
@@ -30,8 +28,6 @@ public class GameController : BaseController {
     public GameObject createListItems, createScreen;
     public CreateManager createManager;
     public Transform downloadingItemsTr;
-    public Text removeAdText;
-    public GameObject removeAdSection;
 
     [HideInInspector]
     public float cellSize;
@@ -66,10 +62,7 @@ public class GameController : BaseController {
 
         createGridLayout.constraintCount = column;
         createGridLayout.cellSize = new Vector2(cellSize, cellSize);
-#if IAP && UNITY_PURCHASING
-        removeAdSection.SetActive(Purchaser.instance.isEnabled);  
-        removeAdText.text = string.Format(removeAdText.text, Purchaser.instance.iapItems[0].price);
-#endif
+
         int count = colorImages.Length;
         for(int i = 0; i < count; i++)
         {
@@ -217,7 +210,7 @@ public class GameController : BaseController {
         createManager.Load();
 #elif UNITY_ANDROID
         
-            PickImage(-1);   
+            PickImage(-1);
 #endif
         });
     }
@@ -299,7 +292,7 @@ public class GameController : BaseController {
             canvasHome.SetActive(false);
             canvasMain.SetActive(true);
             mainScreenObjects.SetActive(true);
-            CUtils.ShowBannerAd();
+            //CUtils.ShowBannerAd();
         });
         
         Sound.instance.PlayButton();
@@ -308,7 +301,8 @@ public class GameController : BaseController {
 
     public void OnMainBackClick()
     {
-        CUtils.CloseBannerAd();
+        //CUtils.CloseBannerAd();
+        CUtils.ShowInterstitialAd();
         Sound.instance.PlayButton();
         board.StopLoadingBanner();
 
@@ -340,7 +334,7 @@ public class GameController : BaseController {
             iTween.MoveTo(completeDialog, completeInTr.position, 0.3f);
         });
 
-        Timer.Schedule(this, 0.3f, () =>
+        Timer.Schedule(this, 0.1f, () =>
         {
             CUtils.ShowInterstitialAd();
         });
@@ -418,19 +412,8 @@ public class GameController : BaseController {
         }
     }
 
-    public void OnRemoveAdClick()
+    public void PrivacyPolicy()
     {
-        Sound.instance.PlayButton();
-#if IAP && UNITY_PURCHASING
-        Purchaser.instance.BuyProduct(0);
-#endif
-    }
-
-    public void OnRestorePurchase()
-    {
-        Sound.instance.PlayButton();
-#if IAP && UNITY_PURCHASING
-        Purchaser.instance.RestorePurchases();
-#endif
+        Application.OpenURL("https://unity3d.com/legal/privacy-policy");
     }
 }

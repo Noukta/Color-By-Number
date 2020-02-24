@@ -254,23 +254,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 806aeddabf0a04248a9f40de59cf372b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  admob:
-    androidBanner: 
-    iosBanner: 
-    androidInterstitial: 
-    iosInterstitial: 
-    androidRewarded: 
-    iosRewarded: 
   unityAds:
     PlayStoreID: 2814152
     AppStoreID: 
-  adPeriod: 75
+  adPeriod: 120
   rewardedVideoPeriod: 120
   rewardedVideoAmount: 50
-  androidPackageID: '[no need now]'
-  iosAppID: '[no need now]'
-  jsonUrl: 
-  jsonBinSecretKey: 
   addItemsToTop: 1
 --- !u!1 &140880
 GameObject:

@@ -12,7 +12,6 @@ public class UnityAdsController : MonoBehaviour
 
     void Awake()
     {
-        print("UnityAdsController Awake");
         instance = this;;
     }
 
@@ -26,7 +25,6 @@ public class UnityAdsController : MonoBehaviour
     {
         if (!Advertisement.IsReady())
         {
-            Debug.Log("Unity Ad not ready!");
             return false;
         }
         return true;
@@ -34,6 +32,7 @@ public class UnityAdsController : MonoBehaviour
 
     public void ShowInterstitial()
     {
+        Debug.Log("Show Interstitial");
         Advertisement.Show();
     }
 
